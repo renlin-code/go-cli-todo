@@ -111,5 +111,19 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println("Usage: go-cli-todo [list|add|complete|uncomplete|delete|clear]")
+	fmt.Println(`
+	Usage: go-cli-todo [list|add|complete|uncomplete|delete|clear]
+	
+	list --------------- Show a list with all your tasks
+	
+	add ---------------- Open a prompt where you can add a name for a new task
+	
+	complete [id] ------ Change the status of a task to 'completed'
+
+	uncomplete [id] ---- Change the status of a task to 'uncompleted'
+
+	delete [id] -------- Delete a task
+
+	clear -------------- Delete all your tasks
+	`)
 }

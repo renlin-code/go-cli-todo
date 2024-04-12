@@ -18,15 +18,18 @@ func ListTasks(tasks []Task) {
 		fmt.Println("No tasks to list")
 		return
 	}
-
+	fmt.Println(" Completed |  ID | Name")
+	fmt.Println("---------------------------------------")
 	for _, task := range tasks {
 		status := " "
 
 		if task.Completed {
-			status = "✓"
+			status = "✓ Yes"
+		} else {
+			status = "✖ No "
 		}
 
-		fmt.Printf("[%s] %d) %s\n", status, task.Id, task.Name)
+		fmt.Printf("   %s   |   %d | %s\n", status, task.Id, task.Name)
 	}
 }
 
