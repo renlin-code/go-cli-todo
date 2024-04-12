@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
 	task "github.com/renlin-code/go-cli-todo/tasks"
@@ -43,22 +44,72 @@ func main() {
 
 	if len(os.Args) < 2 {
 		printUsage()
-	} else {
-		switch os.Args[1] {
-		case "list":
-			task.ListTasks(tasks)
-		case "add":
-			reader := bufio.NewReader(os.Stdin)
-			fmt.Println("Name your task:")
-			name, _ := reader.ReadString('\n')
-			name = strings.TrimSpace(name)
+		return
+	}
+	switch os.Args[1] {
+	case "list":
+		task.ListTasks(tasks)
+	case "add":
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Name your task:")
+		name, _ := reader.ReadString('\n')
+		name = strings.TrimSpace(name)
 
-			tasks = task.AddTask(tasks, name)
-			task.SaveTask(file, tasks)
+		tasks = task.AddTask(tasks, name)
+		task.SaveTask(file, tasks)
+	case "complete":
+		if len(os.Args) < 3 {
+			fmt.Println("You must provide a task id")
+			return
 		}
+
+		id, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			fmt.Println("Invalid id")
+		}
+
+		tasks = task.ChageStatus(tasks, id, true)
+		task.SaveTask(file, tasks)
+	case "uncomplete":
+		if len(os.Args) < 3 {
+			fmt.Println("You must provide a task id")
+			return
+		}
+
+		id, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			fmt.Println("Invalid id")
+		}
+
+		tasks = task.ChageStatus(tasks, id, false)
+		task.SaveTask(file, tasks)
+	case "delete":
+		if len(os.Args) < 3 {
+			fmt.Println("You must provide a task id")
+			return
+		}
+
+		id, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			fmt.Println("Invalid id")
+		}
+
+		tasks = task.DeleteTask(tasks, id)
+		task.SaveTask(file, tasks)
+	case "clear":
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Are you sure you want to delete all your tasks? [y/n]")
+		answer, _ := reader.ReadString('\n')
+		answer = strings.TrimSpace(answer)
+
+		if answer == "y" {
+			task.SaveTask(file, []task.Task{})
+		}
+	default:
+		printUsage()
 	}
 }
 
 func printUsage() {
-	fmt.Println("Usage: go-cli-todo [list|add|complete|delete]")
+	fmt.Println("Usage: go-cli-todo [list|add|complete|uncomplete|delete|clear]")
 }

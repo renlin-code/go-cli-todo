@@ -26,7 +26,7 @@ func ListTasks(tasks []Task) {
 			status = "✓"
 		}
 
-		fmt.Printf("[%s] %d %s\n", status, task.Id, task.Name)
+		fmt.Printf("[%s] %d) %s\n", status, task.Id, task.Name)
 	}
 }
 
@@ -38,6 +38,32 @@ func AddTask(tasks []Task, name string) []Task {
 	}
 
 	return append(tasks, newTask)
+}
+
+func GetNextId(tasks []Task) int {
+	if len(tasks) == 0 {
+		return 1
+	}
+	return tasks[len(tasks)-1].Id + 1
+}
+
+func ChageStatus(tasks []Task, id int, status bool) []Task {
+	for i, task := range tasks {
+		if task.Id == id {
+			tasks[i].Completed = status
+			break
+		}
+	}
+	return tasks
+}
+
+func DeleteTask(tasks []Task, id int) []Task {
+	for i, task := range tasks {
+		if task.Id == id {
+			return append(tasks[:i], tasks[i+1:]...)
+		}
+	}
+	return tasks
 }
 
 func SaveTask(file *os.File, tasks []Task) {
@@ -67,11 +93,4 @@ func SaveTask(file *os.File, tasks []Task) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func GetNextId(tasks []Task) int {
-	if len(tasks) == 0 {
-		return 1
-	}
-	return tasks[len(tasks)-1].Id + 1
 }
